@@ -6,3 +6,8 @@ But what fun would that be if I just used that. So I thought it would be fun to 
 
 ### Running Errors 
 If your code doesn't work for with the lastest open3d version or cv2. Look at the Requirement.txt file. 
+
+Below is an sample of the mp4 file with 30fps. 
+
+https://github.com/user-attachments/assets/96f8e71e-a0cc-4a8b-841e-4b5f9f432587
+
