@@ -7,7 +7,7 @@ import sys
 from tkinter import Tk, filedialog
 
 class Create_mp4:
-    def __init__(self, stl_file, colour=[0.192,0.212,0.248], scale=0.5): 
+    def __init__(self, stl_file, colour=[0.192,0.212,0.248], scale_ratio=0.5): 
         # Loading in STL Object 
         self.stl_file = stl_file 
         
@@ -26,9 +26,10 @@ class Create_mp4:
 
         self.geometry = o3d.geometry.TriangleMesh(self.mesh)  
         # Don't want object to close to the screen 
-        self.geometry.scale(scale, center=(0,0,0))
+        self.geometry.scale(scale_ratio, center=self.mesh.get_center())
         # Just gotta keep things certain for simplicity 
-        self.center = np.array([[0], [0], [0]])
+        self.center = np.array(self.mesh.get_center())
+        # Note that x and z can be change however you like and y is used to rotate things 
         # x = -80 -> has a slight tilt upwards to see the top part of the object
         # y -> Be used to rotate the image 
         R = self.mesh.get_rotation_matrix_from_xyz((np.radians(-80),np.radians(0),np.radians(0)))
@@ -44,8 +45,8 @@ class Create_mp4:
             self.vis.clear_geometries()
             # The rotation addeds on to each other so you don't want to set your x to -80 degrees or anything. 
             R = self.mesh.get_rotation_matrix_from_xyz((0,np.radians(1),0))
-            geometry_r = self.geometry.rotate(R, self.center)
-            self.vis.add_geometry(geometry_r)
+            self.geometry = self.geometry.rotate(R, self.center)
+            self.vis.add_geometry(self.geometry)
             
             # Render the scene to an image
             self.vis.poll_events()
@@ -96,7 +97,7 @@ if __name__ == "__main__":
     if selected_file:
         print(f"You selected: {selected_file}")
         # Prompt the user to select an output directory
-        output_dir = filedialog.askdirectory(title="Select output directory")
+        output_dir = filedialog.askdirectory(title="Select output directory", initialdir=os.path.dirname(selected_file))
 
         # Prompt the user to enter an output file name
         output_file = filedialog.asksaveasfilename(
